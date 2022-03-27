@@ -144,8 +144,8 @@ export const App = () => {
       value: date,
       onChange,
       mode: currentMode,
-      is24Hour: true
-    })
+      is24Hour: true,
+    });
   };
 
   const showDatepicker = () => {
@@ -159,11 +159,11 @@ export const App = () => {
   return (
     <View>
       <Button onPress={showDatepicker} title="Show date picker!" />
-	  <Button onPress={showTimepicker} title="Show time picker!" />
+      <Button onPress={showTimepicker} title="Show time picker!" />
       <Text>selected: {date.toLocaleString()}</Text>
     </View>
   );
-}
+};
 ```
 
 ### Component usage on iOS / Android / Windows
@@ -181,7 +181,10 @@ export const App = () => {
   };
 
   const showMode = (currentMode) => {
-    setShow(true);
+    if (Platform.OS === 'android') {
+      setShow(false);
+      // for iOS, add a button that closes the picker
+    }
     setMode(currentMode);
   };
 
@@ -195,8 +198,8 @@ export const App = () => {
 
   return (
     <View>
-	  <Button onPress={showDatepicker} title="Show date picker!" />
-	  <Button onPress={showTimepicker} title="Show time picker!" />
+      <Button onPress={showDatepicker} title="Show date picker!" />
+      <Button onPress={showTimepicker} title="Show time picker!" />
       <Text>selected: {date.toLocaleString()}</Text>
       {show && (
         <DateTimePicker
@@ -209,11 +212,10 @@ export const App = () => {
       )}
     </View>
   );
-}
+};
 ```
 
 </details>
-
 
 ## Localization note
 
@@ -230,7 +232,6 @@ For testing your localization setup, refer [here](https://developer.apple.com/do
 There is also the iOS-only locale prop that can be used to force locale in some cases but its usage is discouraged due to [not working robustly in all picker modes](./docs/images/ios_date_new.png) (note the mixed month and day names). To the best of our knowledge, it works reliably in the `spinner` mode.
 
 For Expo, follow the [localization docs](https://docs.expo.dev/distribution/app-stores/#localizing-your-ios-app).
-
 
 ### Android imperative api
 
