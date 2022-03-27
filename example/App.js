@@ -97,7 +97,7 @@ export const App = () => {
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
 
-    setShow(Platform.OS === 'ios');
+    setShow(false);
     if (event.type === 'neutralButtonPressed') {
       setDate(new Date(0));
     } else {

@@ -7,13 +7,11 @@ import pickers from './picker';
 import type {AndroidNativeProps, DateTimePickerResult} from './types';
 import {sharedPropsValidation} from './utils';
 import invariant from 'invariant';
-type PresentPickerCallback = () => Promise<DateTimePickerResult>;
 
 type Timestamp = number;
 
 type Params = {
   value: Timestamp,
-  mode: AndroidNativeProps['mode'],
   display: AndroidNativeProps['display'],
   is24Hour: AndroidNativeProps['is24Hour'],
   minimumDate: AndroidNativeProps['minimumDate'],
@@ -22,20 +20,21 @@ type Params = {
   minuteInterval: AndroidNativeProps['minuteInterval'],
   timeZoneOffsetInMinutes: AndroidNativeProps['timeZoneOffsetInMinutes'],
 };
-export function getOpenPicker({
-  mode,
-  value,
-  display,
-  is24Hour,
-  minimumDate,
-  maximumDate,
-  neutralButtonLabel,
-  minuteInterval,
-  timeZoneOffsetInMinutes,
-}: Params): PresentPickerCallback {
+export type PresentPickerCallback = (Params) => Promise<DateTimePickerResult>;
+
+function getOpenPicker(
+  mode: AndroidNativeProps['mode'],
+): PresentPickerCallback {
   switch (mode) {
     case ANDROID_MODE.time:
-      return () =>
+      return ({
+        value,
+        display,
+        is24Hour,
+        neutralButtonLabel,
+        minuteInterval,
+        timeZoneOffsetInMinutes,
+      }: Params) =>
         // $FlowFixMe - `AbstractComponent` [1] is not an instance type.
         pickers[mode].open({
           value,
@@ -46,7 +45,14 @@ export function getOpenPicker({
           timeZoneOffsetInMinutes,
         });
     default:
-      return () =>
+      return ({
+        value,
+        display,
+        minimumDate,
+        maximumDate,
+        neutralButtonLabel,
+        timeZoneOffsetInMinutes,
+      }: Params) =>
         // $FlowFixMe - `AbstractComponent` [1] is not an instance type.
         pickers[ANDROID_MODE.date].open({
           value,
@@ -59,7 +65,7 @@ export function getOpenPicker({
   }
 }
 
-export function timeZoneOffsetDateSetter(
+function timeZoneOffsetDateSetter(
   date: Date,
   timeZoneOffsetInMinutes: ?number,
 ): Date {
@@ -73,7 +79,7 @@ export function timeZoneOffsetDateSetter(
   return date;
 }
 
-export function validateAndroidProps(props: AndroidNativeProps) {
+function validateAndroidProps(props: AndroidNativeProps) {
   sharedPropsValidation({value: props?.value});
   const {mode, display} = props;
   invariant(
@@ -82,3 +88,4 @@ export function validateAndroidProps(props: AndroidNativeProps) {
     `display: ${display} and mode: ${mode} cannot be used together.`,
   );
 }
+export {getOpenPicker, timeZoneOffsetDateSetter, validateAndroidProps};
