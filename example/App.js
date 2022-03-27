@@ -161,7 +161,7 @@ export const App = () => {
             </View>
             <ThemedText selectable testID="timeInfo">
               TZ: {RNLocalize.getTimeZone()}, TZOffset:{' '}
-              {new Date().getTimezoneOffset() / 60} original:{' '}
+              {sourceDate.getTimezoneOffset() / 60} original:{' '}
               {moment(sourceDate).format('MM/DD/YYYY HH:mm')}
             </ThemedText>
             <ThemedText>mode prop:</ThemedText>
